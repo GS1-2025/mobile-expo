@@ -1,32 +1,29 @@
 import React from "react";
-import { View, Text, Linking, Button, StyleSheet } from "react-native";
+import { View, Text, Linking, Button, StyleSheet, TouchableOpacity } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import styles from "../styles/styles";
+
 
 export default function Purchase() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Adquira seu Kit de Sensores</Text>
-      <Text style={styles.description}>
+      <LinearGradient
+        colors={['#fffed2', '#ffecd1']}
+        style={styles.background}
+      />
+      <Text style={styles.titlePurchase}>Adquira seu Kit de Sensores</Text>
+      <Text style={styles.subtitle}>
         Monitore sua casa com sensores de temperatura, umidade e UV.
       </Text>
-      <Button
-        title="Comprar agora"
+
+      <TouchableOpacity
+        style={styles.btn}
         onPress={() => Linking.openURL("https://loja.exemplo.com/kit")}
-      />
+      >
+        <Text style={styles.textBtn}>Comprar agora</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-  description: {
-    fontSize: 16,
-    marginBottom: 16,
-  },
-});
+

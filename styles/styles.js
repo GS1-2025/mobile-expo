@@ -3,18 +3,21 @@ import { StyleSheet } from "react-native"
 export default styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 30
+  },
+  containerPrevention: {
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+    alignItems: 'center',
   },
   background: {
-    flex: 1,
     position: 'absolute',
+    top: 0,
     left: 0,
     right: 0,
-    top: 0,
-    height: 1100,
+    bottom: 0,
   },
   content: {
     flex: 1,
@@ -45,6 +48,12 @@ export default styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: "#743900",
+  },
+  titlePurchase: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#743e00',
+    marginBottom: 20,
   },
   input: {
     borderWidth: 1,
@@ -80,48 +89,35 @@ export default styles = StyleSheet.create({
     borderColor: '#b68100',
     marginBottom: 10,
   },
-  listarFlat: {
-    backgroundColor: '#002c4e',
-    width: 220,
-    color: '#e5fbff',
-    borderWidth: 1,
-    textAlign: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 3,
-    borderRadius: 15,
-    marginTop: 5
+  card: {
+    marginBottom: 20,
+    backgroundColor: '#fdf2f2',
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 3,
   },
-  btnExcluir: {
-    backgroundColor: "red",
-    width: 80,
-    borderRadius: 15,
-    alignItems: "center",
-    height: 21,
-    marginTop: 7,
-    marginBottom: 7,
-    marginRight: 3,
-  },
-  btnEditar: {
-    backgroundColor: "orange",
-    width: 80,
-    borderRadius: 15,
-    alignItems: "center",
-    height: 21,
-    marginTop: 7,
-    marginBottom: 7,
-  },
-  link: {
-    backgroundColor: '#002c4e',
+  cardTitle: {
     fontSize: 18,
-    color: '#e5fbff',
-    width: 250,
-    height: 40,
-    alignItems: 'center',
+    fontWeight: 'bold',
+    color: '#743e00',
+    marginBottom: 8,
     textAlign: 'center',
-    borderRadius: 10
+  },
+
+  cardDesc: {
+    fontSize: 16,
+    color: '#743e00',
+    lineHeight: 22,
+    textAlign: 'center',
   },
   textList: {
     textColor: '#e5fbff',
-  }
+  },
+  description: {
+    fontSize: 15
+  },
 })
