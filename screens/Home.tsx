@@ -5,7 +5,10 @@ import {
   Button,
   StyleSheet,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import styles from "../styles/styles";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
@@ -55,11 +58,12 @@ export default function Home({ navigation }: Props) {
     );
   }
 
+/*
   if (!role) {
     // Se não estiver logado
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Sensolux Chat</Text>
+        <Text style={styles.title}>Sensolux</Text>
         <Text style={styles.subtitle}>
           Por favor, faça login para acessar a aplicação.
         </Text>
@@ -67,58 +71,57 @@ export default function Home({ navigation }: Props) {
       </View>
     );
   }
+*/
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sensolux Chat</Text>
+      <LinearGradient
+        colors={['#ffecd1', '#fffed2']}
+        style={styles.background}
+      />
+      <Text style={styles.title}>Sensolux</Text>
       <Text style={styles.subtitle}>
-        Seu aliado contra doenças causadas por calor excessivo.
+        Seu aliado contra o calor excessivo.
       </Text>
 
-      <Button
-        title="Prevenção"
+      <TouchableOpacity
+        style={styles.btn}
         onPress={() => navigation.navigate("Prevention")}
-      />
-      <Button title="Doenças" onPress={() => navigation.navigate("Diseases")} />
-      <Button
-        title="Monitoramento"
+      >
+        <Text style={styles.textBtn}>Prevenção</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.btn}
+        onPress={() => navigation.navigate("Diseases")}
+      >
+        <Text style={styles.textBtn}>Doenças</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.btn}
         onPress={() => navigation.navigate("Monitor")}
-      />
-      <Button
-        title="Comprar Kit"
+      >
+        <Text style={styles.textBtn}>Monitoramento</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.btn}
         onPress={() => navigation.navigate("Purchase")}
-      />
+      >
+        <Text style={styles.textBtn}>Comprar Kit</Text>
+      </TouchableOpacity>
 
       {role === "admin" && (
-        <>
-          <Button
-            title="Painel Admin"
-            onPress={() => navigation.navigate("AdminPanel")}
-            color="red"
-          />
-        </>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => navigation.navigate("AdminPanel")}
+        >
+          <Text>
+            Painel Admin
+          </Text>
+        </TouchableOpacity>
       )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-  subtitle: {
-    textAlign: "center",
-    marginBottom: 24,
-    fontSize: 16,
-    color: "#555",
-  },
-});
