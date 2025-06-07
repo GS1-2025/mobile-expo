@@ -36,7 +36,7 @@ export default styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#4c2500',
+    color: '#743e00',
     marginBottom: 20,
   },
   subtitle: {
@@ -47,13 +47,11 @@ export default styles = StyleSheet.create({
     color: "#743900",
   },
   input: {
-    backgroundColor: '#e5fbff',
     borderWidth: 1,
-    color: '#002c4e',
-    height: 50,
-    width: 220,
-    borderRadius: 15,
-    marginTop: 5
+    borderColor: "#aaa",
+    borderRadius: 5,
+    padding: 12,
+    marginBottom: 16,
   },
   btn: {
     backgroundColor: "#ffe6aa",
@@ -69,7 +67,18 @@ export default styles = StyleSheet.create({
   textBtn: {
      color: '#b68100', 
      fontSize: 16, 
-     fontWeight: 'bold' ,
+     fontWeight: 'bold',
+  },
+  btnMonitor: {
+    backgroundColor: "#ffe6aa",
+    height: 45,
+    width: 300,
+    justifyContent: 'center',
+    alignItems: "center",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#b68100',
+    marginBottom: 10,
   },
   listarFlat: {
     backgroundColor: '#002c4e',

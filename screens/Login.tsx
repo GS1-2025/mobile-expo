@@ -7,7 +7,10 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import styles from "../styles/styles";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../services/api";
@@ -44,6 +47,10 @@ export default function Login({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
+      <LinearGradient
+        colors={['#fffed2', '#ffecd1']}
+        style={styles.background}
+      />
       <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
@@ -63,30 +70,14 @@ export default function Login({ navigation }: Props) {
       {loading ? (
         <ActivityIndicator size="large" />
       ) : (
-        <Button title="Entrar" onPress={handleLogin} />
+        <TouchableOpacity
+          style={styles.btn}
+         onPress={() => handleLogin()}
+        >
+          <Text style={styles.textBtn}>Entrar</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 24,
-    textAlign: "center",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#aaa",
-    borderRadius: 5,
-    padding: 12,
-    marginBottom: 16,
-  },
-});

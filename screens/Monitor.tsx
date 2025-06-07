@@ -6,7 +6,10 @@ import {
   Button,
   StyleSheet,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import styles from "../styles/styles";
 import api from "../services/api"; // importe a instância axios pronta
 import { LeituraSensor, Alerta } from "../types";
 
@@ -60,10 +63,29 @@ export default function Monitor() {
 
   return (
     <View style={styles.container}>
+      <LinearGradient
+        colors={['#fffed2', '#ffecd1']}
+        style={styles.background}
+      />
       <Text style={styles.title}>Monitor de Dados</Text>
-      <Button title="Carregar Dados" onPress={fetchDados} />
-      <Button title="Carregar Alertas" onPress={fetchAlertas} />
-      <Button title="Temperatura Média Hoje" onPress={fetchMediaTemperatura} />
+      <TouchableOpacity
+        style={styles.btnMonitor}
+        onPress={() => fetchDados()}
+      >
+        <Text style={styles.textBtn}>Carregar Dados</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.btnMonitor}
+        onPress={() => fetchAlertas()}
+      >
+        <Text style={styles.textBtn}>Carregar Alertas</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.btnMonitor}
+        onPress={() => fetchMediaTemperatura()}
+      >
+        <Text style={styles.textBtn}>Temperatura Média Hoje</Text>
+      </TouchableOpacity>
 
       {loading && <ActivityIndicator size="large" color="#0000ff" />}
 
@@ -92,10 +114,3 @@ export default function Monitor() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
-  subtitle: { fontSize: 18, fontWeight: "bold", marginTop: 20 },
-  item: { padding: 10, borderBottomWidth: 1, borderColor: "#ccc" },
-});

@@ -76,7 +76,7 @@ export default function Home({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['#ffecd1', '#fffed2']}
+        colors={['#fffed2', '#ffecd1']}
         style={styles.background}
       />
       <Text style={styles.title}>Sensolux</Text>
@@ -90,7 +90,6 @@ export default function Home({ navigation }: Props) {
       >
         <Text style={styles.textBtn}>Prevenção</Text>
       </TouchableOpacity>
-
       <TouchableOpacity
         style={styles.btn}
         onPress={() => navigation.navigate("Diseases")}
