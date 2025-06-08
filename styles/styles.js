@@ -74,9 +74,9 @@ export default styles = StyleSheet.create({
     marginTop: 10
   },
   textBtn: {
-     color: '#b68100', 
-     fontSize: 16, 
-     fontWeight: 'bold',
+    color: '#b68100',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   btnMonitor: {
     backgroundColor: "#ffe6aa",
@@ -120,4 +120,5 @@ export default styles = StyleSheet.create({
   description: {
     fontSize: 15
   },
+  item: {}
 })

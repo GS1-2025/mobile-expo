@@ -5,7 +5,6 @@ const api = axios.create({
   baseURL: "http://192.168.0.15:8080",
 });
 
-// Interceptor para incluir o token em todas as requisições protegidas
 api.interceptors.request.use(
   async (config) => {
     const token = await AsyncStorage.getItem("token");

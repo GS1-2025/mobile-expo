@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  Button,
-  StyleSheet,
-  ActivityIndicator,
   TouchableOpacity,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import styles from "../styles/styles";
@@ -20,35 +19,45 @@ type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 export default function Home({ navigation }: Props) {
   const [role, setRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userName, setUserName] = useState<string>("");
 
   useEffect(() => {
-    async function loadRole() {
+    async function checkLogin() {
       try {
         const token = await AsyncStorage.getItem("token");
         if (token) {
           const decoded: DecodedToken = jwtDecode(token);
-          // Verifica o role no token (ajuste aqui conforme seu formato)
-          if (Array.isArray(decoded.roles)) {
-            if (decoded.roles.includes("ROLE_ADMIN")) {
-              setRole("admin");
-            } else {
-              setRole("user");
-            }
-          } else {
-            setRole(decoded.roles === "ROLE_ADMIN" ? "admin" : "user");
-          }
+
+          const roleValue = Array.isArray(decoded.roles)
+            ? decoded.roles.includes("ROLE_ADMIN")
+              ? "admin"
+              : "user"
+            : decoded.roles === "ROLE_ADMIN"
+            ? "admin"
+            : "user";
+
+          setRole(roleValue);
+          setUserName(decoded.sub);
         } else {
-          setRole(null); // não logado
+          setRole(null);
         }
       } catch (error) {
-        console.error("Erro ao decodificar token", error);
+        console.error("Erro ao verificar login:", error);
         setRole(null);
       } finally {
         setLoading(false);
       }
     }
-    loadRole();
+
+    checkLogin();
   }, []);
+
+  const logout = async () => {
+    await AsyncStorage.removeItem("token");
+    setRole(null);
+    setUserName("");
+    Alert.alert("Sessão encerrada");
+  };
 
   if (loading) {
     return (
@@ -58,38 +67,21 @@ export default function Home({ navigation }: Props) {
     );
   }
 
-/*
-  if (!role) {
-    // Se não estiver logado
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Sensolux</Text>
-        <Text style={styles.subtitle}>
-          Por favor, faça login para acessar a aplicação.
-        </Text>
-        <Button title="Login" onPress={() => navigation.navigate("Login")} />
-      </View>
-    );
-  }
-*/
-
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['#fffed2', '#ffecd1']}
+        colors={["#fffed2", "#ffecd1"]}
         style={styles.background}
       />
       <Text style={styles.title}>Sensolux</Text>
-      <Text style={styles.subtitle}>
-        Seu aliado contra o calor excessivo.
-      </Text>
+      <Text style={styles.subtitle}>Seu aliado contra o calor excessivo.</Text>
 
-      <TouchableOpacity
-        style={styles.btn}
-        onPress={() => navigation.navigate("Prevention")}
-      >
-        <Text style={styles.textBtn}>Prevenção</Text>
-      </TouchableOpacity>
+      {role && (
+        <Text style={{ fontSize: 16, marginVertical: 8 }}>
+          Bem-vindo, {userName}!
+        </Text>
+      )}
+
       <TouchableOpacity
         style={styles.btn}
         onPress={() => navigation.navigate("Diseases")}
@@ -99,26 +91,55 @@ export default function Home({ navigation }: Props) {
 
       <TouchableOpacity
         style={styles.btn}
+        onPress={() => navigation.navigate("Purchase")}
+      >
+        <Text style={styles.textBtn}>Comprar Kit</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.btn}
+        onPress={() => navigation.navigate("Prevention")}
+      >
+        <Text style={styles.textBtn}>Prevenção</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.btn}
         onPress={() => navigation.navigate("Monitor")}
       >
         <Text style={styles.textBtn}>Monitoramento</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.btn}
-        onPress={() => navigation.navigate("Purchase")}
-      >
-        <Text style={styles.textBtn}>Comprar Kit</Text>
-      </TouchableOpacity>
+      {role === null && (
+        <>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => navigation.navigate("Login")}
+          >
+            <Text style={styles.textBtn}>Login</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => navigation.navigate("Register")}
+          >
+            <Text style={styles.textBtn}>Cadastrar</Text>
+          </TouchableOpacity>
+        </>
+      )}
 
       {role === "admin" && (
         <TouchableOpacity
           style={styles.btn}
           onPress={() => navigation.navigate("AdminPanel")}
         >
-          <Text>
-            Painel Admin
-          </Text>
+          <Text style={styles.textBtn}>Painel Admin</Text>
+        </TouchableOpacity>
+      )}
+
+      {role && (
+        <TouchableOpacity style={styles.btn} onPress={logout}>
+          <Text style={styles.textBtn}>Logout</Text>
         </TouchableOpacity>
       )}
     </View>
