@@ -9,3 +9,5 @@
 [Link](https://youtu.be/WJmfimRwF8w)
 
 ## 💬 Vídeo da demonstração do app
+
+[Link]([https://youtu.be/WJmfimRwF8w](https://www.youtube.com/playlist?list=PLsjNwOw0FQHs3V-1y2sqQyshLFREi9tOE))
