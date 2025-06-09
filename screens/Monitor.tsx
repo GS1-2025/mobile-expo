@@ -1,116 +1,179 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   FlatList,
-  Button,
-  StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import styles from "../styles/styles";
-import api from "../services/api"; // importe a instância axios pronta
+import api from "../services/api";
 import { LeituraSensor, Alerta } from "../types";
 
 export default function Monitor() {
   const [dados, setDados] = useState<LeituraSensor[]>([]);
   const [alertas, setAlertas] = useState<Alerta[]>([]);
-  const [loading, setLoading] = useState(false);
+
+  const [loadingDados, setLoadingDados] = useState(false);
+  const [loadingAlertas, setLoadingAlertas] = useState(false);
+  const [loadingMediaTemp, setLoadingMediaTemp] = useState(false);
 
   async function fetchDados() {
-    setLoading(true);
+    setLoadingDados(true);
     try {
       const response = await api.get<LeituraSensor[]>("/dados");
+      if (!response.data || !Array.isArray(response.data)) {
+        Alert.alert("Aviso", "Não foi possível carregar os dados.");
+        return;
+      }
       setDados(response.data);
+
+      // Se o array estiver vazio, alerta:
+      if (response.data.length === 0) {
+        Alert.alert("Aviso", "Nenhum dado encontrado.");
+      }
     } catch (error) {
-      alert("Erro ao buscar dados");
-      console.error(error);
+      console.error("Erro ao buscar dados:", error);
+      Alert.alert("Erro", "Erro ao buscar dados");
     } finally {
-      setLoading(false);
+      setLoadingDados(false);
     }
   }
 
   async function fetchAlertas() {
-    setLoading(true);
+    setLoadingAlertas(true);
     try {
       const response = await api.get<Alerta[]>("/alertas");
-      console.log("Resposta:", response.data);
+      if (!response.data || !Array.isArray(response.data)) {
+        Alert.alert("Aviso", "Não foi possível carregar os alertas.");
+        return;
+      }
       setAlertas(response.data);
+
+      // Se o array estiver vazio, alerta:
+      if (response.data.length === 0) {
+        Alert.alert("Aviso", "Nenhum alerta encontrado.");
+      }
     } catch (error: any) {
       console.error(
         "Erro ao buscar alertas:",
         error?.response?.data || error.message
       );
-      alert("Erro ao buscar alertas");
+      Alert.alert("Erro", "Erro ao buscar alertas");
+    } finally {
+      setLoadingAlertas(false);
     }
   }
 
   async function fetchMediaTemperatura() {
-    setLoading(true);
+    setLoadingMediaTemp(true);
     try {
       const response = await api.get<{ averageTemperature: number }>(
         "/dashboard/average-temperature-today"
       );
-      alert("Temperatura média hoje: " + response.data.averageTemperature);
+      const temp = response.data?.averageTemperature;
+      if (temp == null) {
+        Alert.alert("Aviso", "Não foi possível obter a temperatura média.");
+        return;
+      }
+      Alert.alert("Temperatura Média", `${temp} ºC`);
     } catch (error) {
-      alert("Erro ao buscar temperatura média");
-      console.error(error);
+      console.error("Erro ao buscar temperatura média:", error);
+      Alert.alert("Erro", "Erro ao buscar temperatura média");
     } finally {
-      setLoading(false);
+      setLoadingMediaTemp(false);
     }
   }
+
+  const carregando = loadingDados || loadingAlertas || loadingMediaTemp;
 
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['#fffed2', '#ffecd1']}
+        colors={["#fffed2", "#ffecd1"]}
         style={styles.background}
       />
+
       <Text style={styles.title}>Monitor de Dados</Text>
-      <TouchableOpacity
-        style={styles.btnMonitor}
-        onPress={() => fetchDados()}
-      >
+
+      <TouchableOpacity style={styles.btnMonitor} onPress={fetchDados}>
         <Text style={styles.textBtn}>Carregar Dados</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.btnMonitor}
-        onPress={() => fetchAlertas()}
-      >
+
+      <TouchableOpacity style={styles.btnMonitor} onPress={fetchAlertas}>
         <Text style={styles.textBtn}>Carregar Alertas</Text>
       </TouchableOpacity>
+
       <TouchableOpacity
         style={styles.btnMonitor}
-        onPress={() => fetchMediaTemperatura()}
+        onPress={fetchMediaTemperatura}
       >
         <Text style={styles.textBtn}>Temperatura Média Hoje</Text>
       </TouchableOpacity>
 
-      {loading && <ActivityIndicator size="large" color="#0000ff" />}
-
+      {carregando && (
+        <ActivityIndicator
+          size="large"
+          color="#0000ff"
+          style={{ marginTop: 10 }}
+        />
+      )}
       <Text style={styles.subtitle}>Dados:</Text>
-      <FlatList
-        data={dados}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text>Temperatura: {item.temperatura}</Text>
-            <Text>Umidade: {item.umidade}</Text>
-          </View>
-        )}
-      />
+
+      {dados.length === 0 ? (
+        <Text
+          style={{
+            textAlign: "center",
+            marginVertical: 10,
+            fontStyle: "italic",
+            color: "gray",
+          }}
+        >
+          Nenhum dado encontrado.
+        </Text>
+      ) : (
+        <FlatList
+          data={dados}
+          keyExtractor={(item, index) =>
+            item?.id?.toString() ?? index.toString()
+          }
+          renderItem={({ item }) => (
+            <View style={styles.item}>
+              <Text>Temperatura: {item?.temperatura ?? "N/A"}</Text>
+              <Text>Umidade: {item?.umidade ?? "N/A"}</Text>
+            </View>
+          )}
+        />
+      )}
 
       <Text style={styles.subtitle}>Alertas:</Text>
-      <FlatList
-        data={alertas}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text>{item.mensagem}</Text>
-          </View>
-        )}
-      />
+
+      {alertas.length === 0 ? (
+        <Text
+          style={{
+            textAlign: "center",
+            marginVertical: 10,
+            fontStyle: "italic",
+            color: "gray",
+          }}
+        >
+          Nenhum alerta encontrado.
+        </Text>
+      ) : (
+        <FlatList
+          data={alertas}
+          keyExtractor={(item, index) =>
+            item?.id?.toString() ?? index.toString()
+          }
+          renderItem={({ item }) => (
+            <View style={styles.item}>
+              <Text>{item?.mensagem ?? "Mensagem não disponível"}</Text>
+            </View>
+          )}
+        />
+      )}
     </View>
   );
 }
