@@ -30,20 +30,27 @@ export default function Login({ navigation }: Props) {
         senha: password,
       });
 
+      console.log("Resposta da API:", response.data); // Diagnóstico
+
       const token = response?.data?.token;
       if (token) {
         await AsyncStorage.setItem("token", token);
         navigation.reset({ index: 0, routes: [{ name: "Home" }] });
       } else {
-        Alert.alert("Erro", "Token não recebido");
+        Alert.alert("Erro", "Token não recebido.");
       }
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
-        // Acesso seguro ao erro da API
-        const status = error.response?.status;
-        const message = error.response?.data?.message || "Erro desconhecido";
+        const data = error.response?.data;
 
-        Alert.alert(`Erro ${status}`, message);
+        let mensagem = "Erro desconhecido.";
+        if (data && typeof data === "object") {
+          mensagem = Object.values(data).join("\n");
+        } else if (typeof data === "string") {
+          mensagem = data;
+        }
+
+        Alert.alert("Erro ao fazer login", mensagem);
       } else {
         Alert.alert("Erro", "Erro inesperado. Tente novamente.");
       }

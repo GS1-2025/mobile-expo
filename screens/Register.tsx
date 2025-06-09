@@ -31,39 +31,61 @@ export default function Register({ navigation }: Props) {
         nome: name,
         email,
         senha: password,
+        role: "ADMIN", // se for obrigatório
       });
 
-      const token = response.data.token;
-      if (token) {
-        await AsyncStorage.setItem("token", token);
-        navigation.reset({ index: 0, routes: [{ name: "Home" }] });
-      } else {
-        Alert.alert("Erro", "Token não recebido após cadastro");
-      }
+      const mensagem =
+        typeof response.data === "string"
+          ? response.data
+          : response.data?.message || "Cadastro realizado com sucesso!";
+
+      Alert.alert("Sucesso", mensagem, [
+        {
+          text: "OK",
+          onPress: () => navigation.navigate("Login"), // ou qualquer tela
+        },
+      ]);
     } catch (error: any) {
-      if (axios.isAxiosError(error) && !error.response) {
-        setNetworkError(true);
-        Alert.alert(
-          "Erro de rede",
-          "Não foi possível conectar ao servidor. Verifique sua conexão com a internet e tente novamente."
-        );
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        const data = error.response?.data;
+
+        if (!error.response) {
+          setNetworkError(true);
+          Alert.alert(
+            "Erro de rede",
+            "Não foi possível conectar ao servidor. Verifique sua conexão com a internet e tente novamente."
+          );
+        } else {
+          let mensagem = "Erro desconhecido.";
+          if (data && typeof data === "object") {
+            mensagem = Object.values(data).join("\n");
+          } else if (typeof data === "string") {
+            mensagem = data;
+          }
+
+          switch (status) {
+            case 400:
+              Alert.alert("Cadastro inválido", mensagem);
+              break;
+            case 409:
+              Alert.alert("Usuário já existe", mensagem);
+              break;
+            default:
+              Alert.alert(`Erro ${status ?? ""}`, mensagem);
+          }
+        }
       } else {
+        Alert.alert(
+          "Erro",
+          error?.message || "Erro inesperado. Tente novamente mais tarde."
+        );
       }
     } finally {
       setLoading(false);
     }
   }
 
-  {
-    networkError && (
-      <TouchableOpacity
-        style={[styles.btn, { backgroundColor: "#f00" }]}
-        onPress={handleRegister}
-      >
-        <Text style={styles.textBtn}>Tentar novamente</Text>
-      </TouchableOpacity>
-    );
-  }
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -98,6 +120,13 @@ export default function Register({ navigation }: Props) {
 
       {loading ? (
         <ActivityIndicator size="large" />
+      ) : networkError ? (
+        <TouchableOpacity
+          style={[styles.btn, { backgroundColor: "#f00" }]}
+          onPress={handleRegister}
+        >
+          <Text style={styles.textBtn}>Tentar novamente</Text>
+        </TouchableOpacity>
       ) : (
         <TouchableOpacity style={styles.btn} onPress={handleRegister}>
           <Text style={styles.textBtn}>Cadastrar</Text>
