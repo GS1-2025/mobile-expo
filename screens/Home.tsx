@@ -82,18 +82,29 @@ export default function Home({ navigation }: Props) {
         </Text>
       )}
 
+      {role === null && (
+        <>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => navigation.navigate("Register")}
+          >
+            <Text style={styles.textBtn}>Cadastrar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => navigation.navigate("Login")}
+          >
+            <Text style={styles.textBtn}>Login</Text>
+          </TouchableOpacity>
+
+        </>
+      )}
+
       <TouchableOpacity
         style={styles.btn}
         onPress={() => navigation.navigate("Diseases")}
       >
         <Text style={styles.textBtn}>Doenças</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.btn}
-        onPress={() => navigation.navigate("Purchase")}
-      >
-        <Text style={styles.textBtn}>Comprar Kit</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -105,28 +116,26 @@ export default function Home({ navigation }: Props) {
 
       <TouchableOpacity
         style={styles.btn}
-        onPress={() => navigation.navigate("Monitor")}
+        onPress={() => navigation.navigate("Purchase")}
       >
-        <Text style={styles.textBtn}>Monitoramento</Text>
+        <Text style={styles.textBtn}>Comprar Kit</Text>
       </TouchableOpacity>
 
-      {role === null && (
-        <>
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => navigation.navigate("Login")}
-          >
-            <Text style={styles.textBtn}>Login</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => navigation.navigate("Register")}
-          >
-            <Text style={styles.textBtn}>Cadastrar</Text>
-          </TouchableOpacity>
-        </>
+      {role && (
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => navigation.navigate("Monitor")}
+        >
+          <Text style={styles.textBtn}>Monitoramento</Text>
+        </TouchableOpacity>
       )}
+      <TouchableOpacity
+        style={styles.btn}
+        onPress={() => navigation.navigate("Devs")}
+      >
+        <Text style={styles.textBtn}>Desenvolvedores</Text>
+      </TouchableOpacity>
+
 
       {role === "admin" && (
         <TouchableOpacity

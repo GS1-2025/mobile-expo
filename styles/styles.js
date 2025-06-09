@@ -60,7 +60,9 @@ export default styles = StyleSheet.create({
     borderColor: "#aaa",
     borderRadius: 5,
     padding: 12,
-    marginBottom: 16,
+    marginBottom: 14,
+    height: 50,
+    width: 250,
   },
   btn: {
     backgroundColor: "#ffe6aa",
@@ -120,5 +122,30 @@ export default styles = StyleSheet.create({
   description: {
     fontSize: 15
   },
+  cardDev: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: '#fdf2f2',
+    padding: 16,
+    width: 350,
+    borderRadius: 12,
+    marginBottom: 16,
+    alignItems: 'center',
+    textAlign: 'center',
+    justifyContent: 'center',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+
+  devImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginRight: 16,
+  },
+
   item: {}
 })

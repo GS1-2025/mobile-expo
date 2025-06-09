@@ -8,6 +8,7 @@ import Purchase from "../screens/Purchase";
 import Login from "../screens/Login";
 import AdminPanel from "../screens/AdminPanel";
 import Register from "../screens/Register";
+import Devs from "../screens/Devs";
 import { RootStackParamList } from "../types";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -22,6 +23,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Diseases" component={Diseases} />
       <Stack.Screen name="Monitor" component={Monitor} />
       <Stack.Screen name="Purchase" component={Purchase} />
+      <Stack.Screen name="Devs" component={Devs} />
       <Stack.Screen name="AdminPanel" component={AdminPanel} />
     </Stack.Navigator>
   );
