@@ -13,7 +13,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../services/api";
 import { RootStackParamList } from "../types";
-
+import axios from "axios";
 type Props = NativeStackScreenProps<RootStackParamList, "Register">;
 
 export default function Register({ navigation }: Props) {
@@ -21,9 +21,11 @@ export default function Register({ navigation }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [networkError, setNetworkError] = useState(false);
 
   async function handleRegister() {
     setLoading(true);
+    setNetworkError(false);
     try {
       const response = await api.post("/auth/register", {
         nome: name,
@@ -38,17 +40,30 @@ export default function Register({ navigation }: Props) {
       } else {
         Alert.alert("Erro", "Token não recebido após cadastro");
       }
-    } catch (error) {
-      console.error(error);
-      Alert.alert(
-        "Erro",
-        "Falha no cadastro. Verifique os dados ou tente novamente."
-      );
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && !error.response) {
+        setNetworkError(true);
+        Alert.alert(
+          "Erro de rede",
+          "Não foi possível conectar ao servidor. Verifique sua conexão com a internet e tente novamente."
+        );
+      } else {
+      }
     } finally {
       setLoading(false);
     }
   }
 
+  {
+    networkError && (
+      <TouchableOpacity
+        style={[styles.btn, { backgroundColor: "#f00" }]}
+        onPress={handleRegister}
+      >
+        <Text style={styles.textBtn}>Tentar novamente</Text>
+      </TouchableOpacity>
+    );
+  }
   return (
     <View style={styles.container}>
       <LinearGradient

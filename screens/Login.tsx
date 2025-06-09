@@ -3,8 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  Button,
-  StyleSheet,
   Alert,
   ActivityIndicator,
   TouchableOpacity,
@@ -15,6 +13,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../services/api";
 import { RootStackParamList } from "../types";
+import axios from "axios"; // necessário para usar axios.isAxiosError
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
@@ -30,16 +29,24 @@ export default function Login({ navigation }: Props) {
         email,
         senha: password,
       });
-      const token = response.data.token;
+
+      const token = response?.data?.token;
       if (token) {
         await AsyncStorage.setItem("token", token);
         navigation.reset({ index: 0, routes: [{ name: "Home" }] });
       } else {
         Alert.alert("Erro", "Token não recebido");
       }
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Erro", "Falha no login, verifique suas credenciais");
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        // Acesso seguro ao erro da API
+        const status = error.response?.status;
+        const message = error.response?.data?.message || "Erro desconhecido";
+
+        Alert.alert(`Erro ${status}`, message);
+      } else {
+        Alert.alert("Erro", "Erro inesperado. Tente novamente.");
+      }
     } finally {
       setLoading(false);
     }
@@ -48,7 +55,7 @@ export default function Login({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['#fffed2', '#ffecd1']}
+        colors={["#fffed2", "#ffecd1"]}
         style={styles.background}
       />
       <Text style={styles.title}>Login</Text>
@@ -70,14 +77,10 @@ export default function Login({ navigation }: Props) {
       {loading ? (
         <ActivityIndicator size="large" />
       ) : (
-        <TouchableOpacity
-          style={styles.btn}
-         onPress={() => handleLogin()}
-        >
+        <TouchableOpacity style={styles.btn} onPress={handleLogin}>
           <Text style={styles.textBtn}>Entrar</Text>
         </TouchableOpacity>
       )}
     </View>
   );
 }
-
